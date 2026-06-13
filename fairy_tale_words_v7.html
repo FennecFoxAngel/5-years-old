@@ -1,0 +1,477 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Nunito:wght@400;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;}
+#app{width:100%;min-height:640px;background:linear-gradient(135deg,#1a0533 0%,#2d0b5e 45%,#1a2a6c 100%);border-radius:16px;overflow:hidden;position:relative;}
+.sparks{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.sp{position:absolute;width:5px;height:5px;border-radius:50%;animation:twk 3s infinite;opacity:0;}
+@keyframes twk{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:1;transform:scale(1)}}
+.main{position:relative;z-index:2;display:flex;flex-direction:column;min-height:640px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(0,0,0,.35);border-bottom:1px solid rgba(255,215,0,.3);}
+.logo{font-family:'Cinzel Decorative',serif;color:#ffd700;font-size:11px;}
+.tmr{background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);border-radius:20px;padding:3px 11px;color:#ffd700;font-size:12px;font-weight:700;}
+.ctr{color:rgba(255,255,255,.6);font-size:11px;}
+.pbar-o{width:100%;height:4px;background:rgba(255,255,255,.1);}
+.pbar-i{height:100%;background:linear-gradient(90deg,#ffd700,#ff88dd);transition:width .5s;}
+.phase-strip{display:flex;justify-content:center;gap:6px;padding:7px 12px;background:rgba(0,0,0,.25);}
+.ph-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:20px;color:rgba(255,255,255,.6);font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;padding:4px 14px;cursor:pointer;transition:all .2s;}
+.ph-btn.on{background:rgba(255,215,0,.38);border-color:#ffd700;color:#fff;}
+.slide-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px 14px;gap:8px;}
+.word-lbl{font-family:'Cinzel Decorative',serif;font-size:52px;color:#fff;text-shadow:0 0 22px rgba(255,255,255,.55),0 4px 8px rgba(0,0,0,.5);letter-spacing:3px;animation:wpulse 2.2s ease-in-out infinite;}
+@keyframes wpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.char-stage{width:100%;max-width:400px;height:190px;display:flex;align-items:center;justify-content:center;}
+.sent-box{background:rgba(255,255,255,.12);border:1px solid rgba(255,215,0,.3);border-radius:14px;padding:14px 18px;max-width:460px;width:100%;text-align:center;}
+.sent-txt{color:#fff;font-size:17px;font-weight:700;line-height:2.2;}
+.sent-txt .hw{color:#ffd700;font-size:38px;font-weight:900;text-decoration:underline;display:inline-block;line-height:1.1;vertical-align:middle;}
+.quiz-wrap{max-width:460px;width:100%;}
+.quiz-q{color:#fff;font-size:17px;font-weight:700;text-align:center;margin-bottom:10px;line-height:1.45;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.qopt{background:rgba(255,255,255,.11);border:2px solid rgba(255,255,255,.22);border-radius:14px;color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;padding:14px 10px;cursor:pointer;transition:all .2s;text-align:center;line-height:1.4;}
+.qopt .qword{font-size:28px;font-weight:900;display:block;margin-bottom:3px;}
+.qopt .qemoji{font-size:22px;display:block;}
+.qopt:hover:not(.done){background:rgba(255,255,255,.22);transform:scale(1.03);}
+.qopt.ok{background:rgba(60,220,90,.28);border-color:#3cdc5a;color:#3cdc5a;}
+.qopt.ok .qword{color:#3cdc5a;}
+.qopt.no{background:rgba(255,70,70,.22);border-color:#ff4646;color:#ff8080;}
+.qopt.no .qword{color:#ff8080;}
+.quiz-res{text-align:center;font-size:16px;font-weight:800;color:#fff;min-height:24px;margin-top:8px;}
+.navbar{display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 14px;background:rgba(0,0,0,.3);border-top:1px solid rgba(255,215,0,.2);flex-wrap:wrap;}
+.nav-btn{background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.5);border-radius:20px;color:#fff;font-size:11px;font-family:'Nunito',sans-serif;font-weight:700;padding:4px 9px;cursor:pointer;transition:all .2s;}
+.nav-btn:hover,.nav-btn.on{background:rgba(255,215,0,.45);}
+.narr{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.25);border-radius:20px;color:#fff;font-size:14px;font-family:'Nunito',sans-serif;font-weight:700;padding:4px 13px;cursor:pointer;transition:all .2s;}
+.narr:hover{background:rgba(255,255,255,.2);}
+.toolbar{background:rgba(0,0,0,.5);border-top:2px solid rgba(255,215,0,.4);padding:8px 14px;display:flex;flex-direction:column;align-items:center;gap:7px;}
+.tlbl{font-size:10px;color:rgba(255,215,0,.7);font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.trow{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;}
+.gbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:4px 9px;cursor:pointer;color:#fff;font-family:'Nunito',sans-serif;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:48px;transition:all .2s;}
+.gbtn .ge{font-size:15px;}
+.gbtn .gl{font-size:10px;color:#fff;}
+.gbtn:hover{transform:scale(1.1);background:rgba(255,255,255,.2);}
+.ebtn{background:rgba(255,100,200,.14);border:1px solid rgba(255,100,200,.38);border-radius:18px;padding:4px 9px;cursor:pointer;color:#fff;font-family:'Nunito',sans-serif;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:56px;transition:all .2s;}
+.ebtn .ge{font-size:15px;}
+.ebtn .gl{font-size:10px;color:#fff;}
+.ebtn:hover{background:rgba(255,100,200,.28);transform:scale(1.05);}
+.rl{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden;}
+.fi{position:absolute;animation:fup 2.5s ease-out forwards;pointer-events:none;}
+@keyframes fup{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(-260px) rotate(360deg)}}
+.cp{position:absolute;width:8px;height:8px;animation:cf 2s ease-out forwards;border-radius:2px;}
+@keyframes cf{0%{opacity:1;transform:translateY(-10px) rotate(0)}100%{opacity:0;transform:translateY(380px) rotate(720deg)}}
+.sb{position:fixed;top:50%;left:50%;font-size:80px;animation:sba 1.5s ease-out forwards;pointer-events:none;z-index:1000;transform:translate(-50%,-50%);}
+@keyframes sba{0%{opacity:0;transform:translate(-50%,-50%) scale(0)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
+.ar{position:fixed;top:50%;left:50%;width:100px;height:100px;margin:-50px 0 0 -50px;border:4px solid gold;border-radius:50%;animation:ara 1.5s ease-out forwards;pointer-events:none;z-index:1000;}
+@keyframes ara{0%{opacity:1;transform:scale(0)}100%{opacity:0;transform:scale(8)}}
+
+@keyframes runL{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(28deg)}}
+@keyframes runA{0%,100%{transform:rotate(22deg)}50%{transform:rotate(-22deg)}}
+@keyframes runBod{0%,100%{transform:translateX(-4px) rotate(-4deg)}50%{transform:translateX(4px) rotate(4deg)}}
+@keyframes jumpSq{0%{transform:scaleY(1) translateY(0)}15%{transform:scaleY(.75) translateY(10px)}40%,60%{transform:scaleY(1) translateY(-62px)}80%{transform:scaleY(1.1) translateY(0)}100%{transform:scaleY(1) translateY(0)}}
+@keyframes jumpLeg{0%,80%,100%{transform:rotate(0deg)}15%{transform:rotate(35deg)}40%,60%{transform:rotate(-20deg)}}
+@keyframes walkLL{0%,100%{transform:rotate(-22deg)}50%{transform:rotate(22deg)}}
+@keyframes walkRL{0%,100%{transform:rotate(22deg)}50%{transform:rotate(-22deg)}}
+@keyframes walkLA{0%,100%{transform:rotate(18deg)}50%{transform:rotate(-18deg)}}
+@keyframes walkRA{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(18deg)}}
+@keyframes sitBody{0%{transform:translateY(0) scaleY(1)}100%{transform:translateY(18px) scaleY(.78)}}
+@keyframes sitLeg{0%{transform:rotate(0deg)}100%{transform:rotate(90deg)}}
+@keyframes standRise{0%{transform:translateY(22px) scaleY(.8)}60%{transform:translateY(-4px) scaleY(1.04)}100%{transform:translateY(0) scaleY(1)}}
+@keyframes clapL{0%,100%{transform:translateX(-22px)}45%,55%{transform:translateX(0px)}}
+@keyframes clapR{0%,100%{transform:translateX(22px)}45%,55%{transform:translateX(0px)}}
+@keyframes danceHip{0%,100%{transform:rotate(-12deg) translateX(-5px)}50%{transform:rotate(12deg) translateX(5px)}}
+@keyframes danceAL{0%,100%{transform:rotate(-40deg)}50%{transform:rotate(10deg)}}
+@keyframes danceAR{0%,100%{transform:rotate(40deg)}50%{transform:rotate(-10deg)}}
+@keyframes singHead{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes singMouth{0%,100%{transform:scaleY(1)}40%,60%{transform:scaleY(2.2)}}
+@keyframes waveArm{0%{transform:rotate(-5deg)}25%{transform:rotate(-40deg)}75%{transform:rotate(15deg)}100%{transform:rotate(-5deg)}}
+@keyframes smileGrow{0%,100%{transform:scaleX(1)}50%{transform:scaleX(1.6)}}
+@keyframes cheekPuff{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+</style>
+
+<div id="app">
+  <div class="sparks" id="sparks"></div>
+  <div class="main">
+    <div class="topbar">
+      <div class="logo">✨ Enchanted Action Words</div>
+      <div class="tmr" id="tmr">30:00</div>
+      <div class="ctr" id="ctr">1 / 30</div>
+    </div>
+    <div class="pbar-o"><div class="pbar-i" id="prog" style="width:3.3%"></div></div>
+    <div class="phase-strip">
+      <button class="ph-btn on" id="ph0" onclick="goPhase(0)">📚 Words (1–10)</button>
+      <button class="ph-btn" id="ph1" onclick="goPhase(1)">📖 Sentences (11–20)</button>
+      <button class="ph-btn" id="ph2" onclick="goPhase(2)">🎯 Quiz (21–30)</button>
+    </div>
+    <div class="slide-area" id="slideArea"></div>
+    <div class="navbar">
+      <button class="narr" onclick="prev()">◀</button>
+      <div id="wbtns" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:380px;"></div>
+      <button class="narr" onclick="next()">▶</button>
+    </div>
+    <div class="toolbar">
+      <div class="tlbl">🎓 Teacher Controls</div>
+      <div class="trow" id="gRow"></div>
+      <div class="trow" id="eRow"></div>
+    </div>
+  </div>
+</div>
+<div class="rl" id="rl"></div>
+
+<script>
+const WORDS=['run','jump','walk','sit','stand','clap','dance','sing','wave','smile'];
+
+const SENTENCES=[
+  'The fairy likes to <b>run</b> fast!',
+  'The frog can <b>jump</b> very high!',
+  'The prince will <b>walk</b> to the castle.',
+  'The princess can <b>sit</b> on her throne.',
+  'The knight will <b>stand</b> up tall.',
+  'Let us <b>clap</b> our hands together!',
+  'The mermaid loves to <b>dance</b> and spin.',
+  'The angel can <b>sing</b> a pretty song.',
+  'The wizard will <b>wave</b> his magic wand.',
+  'The unicorn will <b>smile</b> at you!'
+];
+
+const QUIZ=[
+  {q:'What does a fairy do when she runs? 🧚',opts:[{w:'go fast',e:'🏃'},{w:'sleep',e:'😴'},{w:'eat cake',e:'🍰'},{w:'read',e:'📖'}],a:0},
+  {q:'The frog jumps. Where does he go? 🐸',opts:[{w:'down',e:'👇'},{w:'up high!',e:'⬆️'},{w:'in water',e:'💧'},{w:'behind a tree',e:'🌳'}],a:1},
+  {q:'The prince walks slowly. How does he move? 🤴',opts:[{w:'very fast',e:'💨'},{w:'he flies',e:'🦅'},{w:'step by step',e:'🚶'},{w:'he hops',e:'🐰'}],a:2},
+  {q:'The princess sits on her throne. What is she doing? 👸',opts:[{w:'standing up',e:'🧍'},{w:'jumping',e:'🦘'},{w:'resting in her chair',e:'🪑'},{w:'running',e:'🏃'}],a:2},
+  {q:'The knight stands tall. What does he look like? ⚔️',opts:[{w:'short and bent',e:'🙇'},{w:'tall and straight',e:'🧍'},{w:'lying down',e:'😴'},{w:'jumping',e:'🦘'}],a:1},
+  {q:'We clap our hands. What sound do we make? 👏',opts:[{w:'boom!',e:'💥'},{w:'tweet!',e:'🐦'},{w:'clap clap!',e:'👏'},{w:'splat!',e:'💦'}],a:2},
+  {q:'The mermaid dances. How does her body move? 🧜',opts:[{w:'side to side',e:'🕺'},{w:'up and down',e:'⬆️⬇️'},{w:'she stays still',e:'🗿'},{w:'she runs away',e:'🏃'}],a:0},
+  {q:'The angel sings a song. What does she use? 🎵',opts:[{w:'her hands',e:'🙌'},{w:'her feet',e:'🦶'},{w:'her voice',e:'🎤'},{w:'her wand',e:'🪄'}],a:2},
+  {q:'The wizard waves his wand. Which part moves? 🪄',opts:[{w:'his legs',e:'🦵'},{w:'his head',e:'🤔'},{w:'his arm',e:'🖐'},{w:'his tummy',e:'🫃'}],a:2},
+  {q:'The unicorn smiles at you. How does she look? 🦄',opts:[{w:'sad',e:'😢'},{w:'happy',e:'😊'},{w:'angry',e:'😠'},{w:'sleepy',e:'😴'}],a:1}
+];
+
+function makeSVG(word){
+  const S={
+    run:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="185" rx="28" ry="7" fill="rgba(255,150,220,.25)"/>
+      <g style="animation:runBod .35s ease-in-out infinite;transform-origin:100px 110px">
+        <path d="M68 98 Q100 78 132 98" fill="#ff88dd" opacity=".65"/>
+        <path d="M68 98 Q100 116 132 98" fill="#ff88dd" opacity=".38"/>
+        <ellipse cx="100" cy="80" rx="17" ry="19" fill="#FDBCB4"/>
+        <ellipse cx="93" cy="77" rx="2.5" ry="2.5" fill="#222"/>
+        <ellipse cx="107" cy="77" rx="2.5" ry="2.5" fill="#222"/>
+        <path d="M94 87 Q100 92 106 87" stroke="#c0604f" stroke-width="1.5" fill="none"/>
+        <path d="M86 70 Q90 61 94 66" stroke="#ffd700" stroke-width="2" fill="none"/>
+        <path d="M114 70 Q110 61 106 66" stroke="#ffd700" stroke-width="2" fill="none"/>
+        <rect x="91" y="99" width="18" height="30" rx="5" fill="#ff88dd"/>
+        <line x1="91" y1="99" x2="75" y2="95" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round" style="animation:runA .35s ease-in-out infinite;transform-origin:91px 99px"/>
+        <line x1="109" y1="99" x2="125" y2="103" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round" style="animation:runA .35s ease-in-out infinite reverse;transform-origin:109px 99px"/>
+        <line x1="91" y1="129" x2="78" y2="155" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round" style="animation:runL .35s ease-in-out infinite;transform-origin:91px 129px"/>
+        <line x1="109" y1="129" x2="122" y2="155" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round" style="animation:runL .35s ease-in-out infinite reverse;transform-origin:109px 129px"/>
+        <line x1="78" y1="155" x2="64" y2="168" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round" style="animation:runL .35s ease-in-out infinite reverse;transform-origin:78px 155px"/>
+        <line x1="122" y1="155" x2="136" y2="162" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round" style="animation:runL .35s ease-in-out infinite;transform-origin:122px 155px"/>
+      </g></svg>`,
+    jump:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="188" rx="24" ry="5" fill="rgba(136,255,136,.2)"/>
+      <g style="animation:jumpSq .9s ease-in-out infinite;transform-origin:100px 145px">
+        <ellipse cx="100" cy="128" rx="25" ry="19" fill="#88ff88"/>
+        <ellipse cx="100" cy="102" rx="29" ry="24" fill="#88ff88"/>
+        <circle cx="88" cy="92" r="7" fill="#88ff88" stroke="#fff" stroke-width="1.2"/>
+        <circle cx="112" cy="92" r="7" fill="#88ff88" stroke="#fff" stroke-width="1.2"/>
+        <circle cx="88" cy="92" r="4" fill="#111"/>
+        <circle cx="112" cy="92" r="4" fill="#111"/>
+        <path d="M90 113 Q100 120 110 113" stroke="#fff" stroke-width="2" fill="none"/>
+        <rect x="88" y="87" width="7" height="3" rx="1" fill="#ffd700"/>
+        <rect x="105" y="87" width="7" height="3" rx="1" fill="#ffd700"/>
+        <line x1="86" y1="143" x2="66" y2="162" stroke="#88ff88" stroke-width="7" stroke-linecap="round" style="animation:jumpLeg .9s ease-in-out infinite;transform-origin:86px 143px"/>
+        <line x1="114" y1="143" x2="134" y2="162" stroke="#88ff88" stroke-width="7" stroke-linecap="round" style="animation:jumpLeg .9s ease-in-out infinite reverse;transform-origin:114px 143px"/>
+        <ellipse cx="63" cy="165" rx="13" ry="7" fill="#88ff88"/>
+        <ellipse cx="137" cy="165" rx="13" ry="7" fill="#88ff88"/>
+      </g></svg>`,
+    walk:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="186" rx="24" ry="6" fill="rgba(136,200,255,.2)"/>
+      <ellipse cx="100" cy="74" rx="18" ry="20" fill="#FDBCB4"/>
+      <path d="M83 62 Q100 48 117 62 L114 69 Q100 58 86 69 Z" fill="#ffd700"/>
+      <circle cx="100" cy="53" r="4" fill="#ffd700"/>
+      <ellipse cx="93" cy="72" rx="2.5" ry="2.5" fill="#222"/>
+      <ellipse cx="107" cy="72" rx="2.5" ry="2.5" fill="#222"/>
+      <path d="M93 82 Q100 87 107 82" stroke="#c0604f" stroke-width="1.5" fill="none"/>
+      <rect x="83" y="94" width="34" height="42" rx="6" fill="#88ccff"/>
+      <line x1="83" y1="108" x2="66" y2="130" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round" style="animation:walkLA .9s ease-in-out infinite;transform-origin:83px 108px"/>
+      <line x1="117" y1="108" x2="134" y2="130" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round" style="animation:walkRA .9s ease-in-out infinite;transform-origin:117px 108px"/>
+      <line x1="89" y1="136" x2="78" y2="162" stroke="#88ccff" stroke-width="8" stroke-linecap="round" style="animation:walkLL .9s ease-in-out infinite;transform-origin:89px 136px"/>
+      <line x1="111" y1="136" x2="122" y2="162" stroke="#88ccff" stroke-width="8" stroke-linecap="round" style="animation:walkRL .9s ease-in-out infinite;transform-origin:111px 136px"/></svg>`,
+    sit:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <rect x="55" y="128" width="90" height="16" rx="5" fill="rgba(255,215,0,.35)" stroke="#ffd700" stroke-width="1.2"/>
+      <rect x="55" y="144" width="12" height="42" rx="4" fill="rgba(255,215,0,.4)"/>
+      <rect x="133" y="144" width="12" height="42" rx="4" fill="rgba(255,215,0,.4)"/>
+      <g style="animation:sitBody .7s ease-in-out forwards alternate infinite;transform-origin:100px 108px">
+        <ellipse cx="100" cy="72" rx="18" ry="20" fill="#FDBCB4"/>
+        <path d="M82 60 Q100 46 118 60 L115 67 Q100 56 85 67 Z" fill="#ffaadd"/>
+        <circle cx="90" cy="50" r="3.5" fill="#ffaadd"/>
+        <circle cx="100" cy="47" r="3.5" fill="#ffaadd"/>
+        <circle cx="110" cy="50" r="3.5" fill="#ffaadd"/>
+        <ellipse cx="93" cy="70" rx="2.5" ry="2.5" fill="#222"/>
+        <ellipse cx="107" cy="70" rx="2.5" ry="2.5" fill="#222"/>
+        <path d="M93 80 Q100 86 107 80" stroke="#c0604f" stroke-width="2" fill="none"/>
+        <rect x="83" y="92" width="34" height="36" rx="7" fill="#ffaadd"/>
+        <line x1="83" y1="103" x2="64" y2="120" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+        <line x1="117" y1="103" x2="136" y2="120" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+        <line x1="88" y1="128" x2="78" y2="148" stroke="#ffaadd" stroke-width="8" stroke-linecap="round" style="animation:sitLeg .7s ease-in-out forwards alternate infinite;transform-origin:88px 128px"/>
+        <line x1="112" y1="128" x2="122" y2="148" stroke="#ffaadd" stroke-width="8" stroke-linecap="round" style="animation:sitLeg .7s ease-in-out forwards alternate infinite;transform-origin:112px 128px"/>
+        <line x1="78" y1="148" x2="62" y2="148" stroke="#ffaadd" stroke-width="7" stroke-linecap="round"/>
+        <line x1="122" y1="148" x2="138" y2="148" stroke="#ffaadd" stroke-width="7" stroke-linecap="round"/>
+      </g></svg>`,
+    stand:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="186" rx="26" ry="7" fill="rgba(170,170,255,.2)"/>
+      <g style="animation:standRise 1.8s ease-out forwards;transform-origin:100px 130px">
+        <ellipse cx="100" cy="72" rx="20" ry="22" fill="#bbb"/>
+        <rect x="86" y="60" width="28" height="16" rx="4" fill="#999"/>
+        <rect x="88" y="64" width="10" height="9" fill="rgba(100,200,255,.5)"/>
+        <rect x="102" y="64" width="10" height="9" fill="rgba(100,200,255,.5)"/>
+        <rect x="80" y="94" width="40" height="56" rx="5" fill="#aaa"/>
+        <rect x="82" y="96" width="36" height="20" rx="3" fill="#aaaaff" opacity=".7"/>
+        <line x1="80" y1="106" x2="58" y2="106" stroke="#bbb" stroke-width="7" stroke-linecap="round"/>
+        <line x1="120" y1="106" x2="152" y2="106" stroke="#bbb" stroke-width="7" stroke-linecap="round"/>
+        <line x1="58" y1="106" x2="56" y2="126" stroke="#bbb" stroke-width="6" stroke-linecap="round"/>
+        <line x1="152" y1="106" x2="154" y2="126" stroke="#bbb" stroke-width="6" stroke-linecap="round"/>
+        <line x1="88" y1="150" x2="88" y2="183" stroke="#aaa" stroke-width="10" stroke-linecap="round"/>
+        <line x1="112" y1="150" x2="112" y2="183" stroke="#aaa" stroke-width="10" stroke-linecap="round"/>
+      </g></svg>`,
+    clap:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="186" rx="22" ry="6" fill="rgba(170,255,170,.2)"/>
+      <ellipse cx="100" cy="76" rx="17" ry="19" fill="#FDBCB4"/>
+      <path d="M83 66 Q100 52 117 66" fill="#aaffaa"/>
+      <path d="M83 66 L76 49 Q86 60 90 63 Z" fill="#aaffaa"/>
+      <path d="M117 66 L124 49 Q114 60 110 63 Z" fill="#aaffaa"/>
+      <ellipse cx="93" cy="74" rx="2.5" ry="2.5" fill="#222"/>
+      <ellipse cx="107" cy="74" rx="2.5" ry="2.5" fill="#222"/>
+      <path d="M93 85 Q100 91 107 85" stroke="#c0604f" stroke-width="2" fill="none"/>
+      <rect x="84" y="95" width="32" height="44" rx="6" fill="#aaffaa"/>
+      <line x1="84" y1="142" x2="80" y2="166" stroke="#aaffaa" stroke-width="7" stroke-linecap="round"/>
+      <line x1="116" y1="142" x2="120" y2="166" stroke="#aaffaa" stroke-width="7" stroke-linecap="round"/>
+      <g style="animation:clapL .45s ease-in-out infinite;transform-origin:84px 116px">
+        <rect x="46" y="108" width="38" height="18" rx="8" fill="#FDBCB4"/>
+        <path d="M50 108 Q48 100 54 98 Q60 96 62 102" stroke="#f0a080" stroke-width="1" fill="none"/>
+        <path d="M60 108 Q58 100 64 98 Q70 97 70 103" stroke="#f0a080" stroke-width="1" fill="none"/>
+        <path d="M70 108 Q68 100 74 98 Q80 97 80 104" stroke="#f0a080" stroke-width="1" fill="none"/>
+      </g>
+      <g style="animation:clapR .45s ease-in-out infinite;transform-origin:116px 116px">
+        <rect x="116" y="108" width="38" height="18" rx="8" fill="#FDBCB4"/>
+        <path d="M120 108 Q118 100 124 98 Q130 97 130 103" stroke="#f0a080" stroke-width="1" fill="none"/>
+        <path d="M130 108 Q128 100 134 98 Q140 97 140 103" stroke="#f0a080" stroke-width="1" fill="none"/>
+        <path d="M140 108 Q138 100 144 98 Q150 97 150 104" stroke="#f0a080" stroke-width="1" fill="none"/>
+      </g></svg>`,
+    dance:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="186" rx="24" ry="6" fill="rgba(68,255,221,.2)"/>
+      <g style="animation:danceHip .7s ease-in-out infinite;transform-origin:100px 125px">
+        <ellipse cx="100" cy="74" rx="18" ry="20" fill="#FDBCB4"/>
+        <path d="M82 62 Q100 48 118 62" stroke="#8B4513" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M83 54 Q91 44 99 52" stroke="#8B4513" stroke-width="5" fill="none"/>
+        <path d="M101 52 Q109 44 117 54" stroke="#8B4513" stroke-width="5" fill="none"/>
+        <ellipse cx="93" cy="72" rx="2.5" ry="2.5" fill="#222"/>
+        <ellipse cx="107" cy="72" rx="2.5" ry="2.5" fill="#222"/>
+        <path d="M93 83 Q100 89 107 83" stroke="#c0604f" stroke-width="2" fill="none"/>
+        <rect x="83" y="94" width="34" height="34" rx="9" fill="#44ffdd"/>
+        <path d="M83 126 Q100 135 117 126 Q114 157 100 163 Q86 157 83 126Z" fill="#22aa88"/>
+        <path d="M87 160 Q100 170 113 160 Q107 172 100 174 Q93 172 87 160Z" fill="#44ffdd"/>
+        <line x1="83" y1="106" x2="55" y2="88" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round" style="animation:danceAL .7s ease-in-out infinite;transform-origin:83px 106px"/>
+        <line x1="117" y1="106" x2="145" y2="88" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round" style="animation:danceAR .7s ease-in-out infinite;transform-origin:117px 106px"/>
+        <circle cx="52" cy="86" r="6" fill="#FDBCB4"/>
+        <circle cx="148" cy="86" r="6" fill="#FDBCB4"/>
+      </g></svg>`,
+    sing:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="186" rx="22" ry="6" fill="rgba(255,255,170,.2)"/>
+      <circle cx="100" cy="58" r="20" fill="rgba(255,215,0,.35)"/>
+      <path d="M62 94 Q42 74 56 88 Q46 104 70 99 Q80 90 83 96 Z" fill="white" opacity=".9"/>
+      <path d="M138 94 Q158 74 144 88 Q154 104 130 99 Q120 90 117 96 Z" fill="white" opacity=".9"/>
+      <g style="animation:singHead .55s ease-in-out infinite;transform-origin:100px 78px">
+        <ellipse cx="100" cy="78" rx="18" ry="20" fill="#FDBCB4"/>
+        <ellipse cx="93" cy="74" rx="2.5" ry="2.5" fill="#222"/>
+        <ellipse cx="107" cy="74" rx="2.5" ry="2.5" fill="#222"/>
+        <g style="animation:singMouth .45s ease-in-out infinite;transform-origin:100px 88px">
+          <ellipse cx="100" cy="88" rx="6" ry="5" fill="#c0604f"/>
+          <ellipse cx="100" cy="89" rx="4" ry="3" fill="#8b0000"/>
+        </g>
+      </g>
+      <rect x="83" y="98" width="34" height="46" rx="8" fill="#ffffaa"/>
+      <line x1="83" y1="112" x2="66" y2="130" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+      <line x1="117" y1="112" x2="134" y2="130" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+      <line x1="89" y1="144" x2="83" y2="168" stroke="#ffffaa" stroke-width="7" stroke-linecap="round"/>
+      <line x1="111" y1="144" x2="117" y2="168" stroke="#ffffaa" stroke-width="7" stroke-linecap="round"/>
+      <text x="125" y="68" font-size="14" fill="#ffd700" opacity=".85">♪</text>
+      <text x="148" y="52" font-size="11" fill="#ffd700" opacity=".65">♫</text>
+      <text x="52" y="60" font-size="12" fill="#ffd700" opacity=".6">♩</text></svg>`,
+    wave:`<svg viewBox="0 0 200 195" width="195" height="195" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="186" rx="24" ry="6" fill="rgba(200,136,255,.2)"/>
+      <ellipse cx="100" cy="82" rx="20" ry="17" fill="#FDBCB4"/>
+      <path d="M86 69 Q100 24 114 69 Z" fill="#cc88ff"/>
+      <circle cx="100" cy="69" r="3" fill="#ffd700"/>
+      <path d="M80 74 Q100 65 120 74 Q116 63 100 59 Q84 63 80 74 Z" fill="#cc88ff"/>
+      <ellipse cx="92" cy="81" rx="2.8" ry="2.8" fill="#222"/>
+      <ellipse cx="108" cy="81" rx="2.8" ry="2.8" fill="#222"/>
+      <path d="M94 91 Q100 96 106 91" stroke="#a0604f" stroke-width="1.5" fill="none"/>
+      <rect x="81" y="99" width="38" height="50" rx="6" fill="#cc88ff"/>
+      <line x1="81" y1="113" x2="62" y2="135" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+      <line x1="89" y1="149" x2="83" y2="174" stroke="#cc88ff" stroke-width="8" stroke-linecap="round"/>
+      <line x1="111" y1="149" x2="117" y2="174" stroke="#cc88ff" stroke-width="8" stroke-linecap="round"/>
+      <g style="animation:waveArm .7s ease-in-out infinite;transform-origin:119px 113px">
+        <line x1="119" y1="113" x2="148" y2="95" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+        <line x1="148" y1="95" x2="168" y2="78" stroke="#bbb" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="170" cy="76" r="7" fill="#ffd700" stroke="#fff" stroke-width="1"/>
+        <circle cx="176" cy="66" r="3" fill="#ffd700" opacity=".55"/>
+        <circle cx="162" cy="62" r="2" fill="#ffd700" opacity=".4"/>
+      </g></svg>`,
+    smile:`<svg viewBox="0 0 220 190" width="210" height="190" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="110" cy="182" rx="52" ry="8" fill="rgba(255,200,136,.2)"/>
+      <ellipse cx="128" cy="132" rx="52" ry="33" fill="white"/>
+      <ellipse cx="70" cy="117" rx="28" ry="21" fill="white"/>
+      <ellipse cx="68" cy="100" rx="15" ry="11" fill="white"/>
+      <line x1="68" y1="89" x2="60" y2="61" stroke="#cc88ff" stroke-width="5" stroke-linecap="round"/>
+      <line x1="68" y1="89" x2="76" y2="63" stroke="#ffd700" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="58" cy="92" rx="6" ry="5" fill="white" stroke="#ffbbdd" stroke-width="1"/>
+      <ellipse cx="78" cy="92" rx="6" ry="5" fill="white" stroke="#ffbbdd" stroke-width="1"/>
+      <circle cx="62" cy="101" r="4" fill="#222"/>
+      <circle cx="74" cy="101" r="4" fill="#222"/>
+      <circle cx="63" cy="100" r="1.5" fill="white"/>
+      <circle cx="75" cy="100" r="1.5" fill="white"/>
+      <g style="animation:cheekPuff .9s ease-in-out infinite;transform-origin:58px 108px">
+        <ellipse cx="58" cy="108" rx="5" ry="3" fill="#ffaacc"/>
+      </g>
+      <g style="animation:cheekPuff .9s ease-in-out infinite;transform-origin:78px 108px">
+        <ellipse cx="78" cy="108" rx="5" ry="3" fill="#ffaacc"/>
+      </g>
+      <g style="animation:smileGrow .9s ease-in-out infinite;transform-origin:68px 114px">
+        <path d="M57 111 Q68 125 79 111" stroke="#c0604f" stroke-width="3" fill="rgba(255,150,150,.3)" stroke-linecap="round"/>
+      </g>
+      <path d="M148 67 Q176 62 180 85 Q175 80 162 85 Q172 80 152 90 Z" fill="#ffcc88" opacity=".85"/>
+      <line x1="98" y1="152" x2="93" y2="174" stroke="white" stroke-width="8" stroke-linecap="round"/>
+      <line x1="118" y1="156" x2="116" y2="176" stroke="white" stroke-width="8" stroke-linecap="round"/>
+      <line x1="142" y1="156" x2="144" y2="176" stroke="white" stroke-width="8" stroke-linecap="round"/>
+      <line x1="162" y1="150" x2="167" y2="172" stroke="white" stroke-width="8" stroke-linecap="round"/>
+      <path d="M162 132 Q192 117 196 135 Q187 133 182 144 Q177 130 162 133 Z" fill="#ffcc88"/></svg>`
+  };
+  return S[word]||'';
+}
+
+const GIFTS=[{e:'🌸',l:'Rose'},{e:'🌺',l:'Flower'},{e:'⭐',l:'Star'},{e:'🏆',l:'Trophy'},{e:'🎁',l:'Gift'},{e:'💎',l:'Gem'},{e:'🦋',l:'Butterfly'},{e:'🍭',l:'Candy'},{e:'🌈',l:'Rainbow'},{e:'✨',l:'Magic'}];
+const EFFECTS=[{e:'🎉',l:'Confetti!',f:'doConfetti'},{e:'🌟',l:'Great Job!',f:'doStarBurst'},{e:'👀',l:'Look Here!',f:'doRing'},{e:'🥇',l:'Amazing!',f:'doAllStar'},{e:'💝',l:'Well Done!',f:'doHearts'}];
+
+let slide=0,timerS=1800,qDone=false;
+
+function init(){
+  buildSparks();buildGifts();buildEffects();buildWordBtns();render();startTimer();
+}
+
+function buildSparks(){
+  const l=document.getElementById('sparks');
+  for(let i=0;i<18;i++){
+    const s=document.createElement('div');s.className='sp';
+    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=Math.random()*3+'s';s.style.animationDuration=(2+Math.random()*2)+'s';
+    s.style.background=['gold','#ff88dd','#88ddff','#88ff88','white'][Math.floor(Math.random()*5)];
+    l.appendChild(s);
+  }
+}
+
+function buildGifts(){
+  const r=document.getElementById('gRow');
+  GIFTS.forEach(g=>{const b=document.createElement('button');b.className='gbtn';b.onclick=()=>reward(g.e);b.innerHTML=`<span class="ge">${g.e}</span><span class="gl">${g.l}</span>`;r.appendChild(b);});
+}
+
+function buildEffects(){
+  const r=document.getElementById('eRow');
+  EFFECTS.forEach(e=>{const b=document.createElement('button');b.className='ebtn';b.onclick=()=>window[e.f]();b.innerHTML=`<span class="ge">${e.e}</span><span class="gl">${e.l}</span>`;r.appendChild(b);});
+}
+
+function buildWordBtns(){
+  const c=document.getElementById('wbtns');
+  WORDS.forEach((w,i)=>{
+    const b=document.createElement('button');b.className='nav-btn';b.id='wb'+i;
+    b.style.fontSize='11px';b.style.padding='4px 9px';b.textContent=w;
+    b.onclick=()=>{slide=i;qDone=false;render();};
+    c.appendChild(b);
+  });
+}
+
+function getPhase(s){return s<10?0:s<20?1:2;}
+function goPhase(p){slide=p*10;qDone=false;render();}
+
+function render(){
+  const ph=getPhase(slide);
+  [0,1,2].forEach(i=>document.getElementById('ph'+i).classList.toggle('on',i===ph));
+  document.getElementById('ctr').textContent=`${slide+1} / 30`;
+  document.getElementById('prog').style.width=`${((slide+1)/30)*100}%`;
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('on',i===(slide%10)));
+
+  const wi=slide%10;
+  const word=WORDS[wi];
+  const area=document.getElementById('slideArea');
+  area.innerHTML='';
+
+  const wl=document.createElement('div');wl.className='word-lbl';wl.textContent=word;area.appendChild(wl);
+
+  if(ph===0){
+    const st=document.createElement('div');st.className='char-stage';st.innerHTML=makeSVG(word);area.appendChild(st);
+
+  } else if(ph===1){
+    const st=document.createElement('div');st.className='char-stage';st.innerHTML=makeSVG(word);area.appendChild(st);
+    const sb=document.createElement('div');sb.className='sent-box';
+    const stxt=document.createElement('div');stxt.className='sent-txt';
+    stxt.innerHTML=SENTENCES[wi].replace(`<b>${word}</b>`,`<span class="hw">${word}</span>`);
+    sb.appendChild(stxt);area.appendChild(sb);
+
+  } else {
+    const Q=QUIZ[wi];
+    qDone=false;
+    const qw=document.createElement('div');qw.className='quiz-wrap';
+    const qq=document.createElement('div');qq.className='quiz-q';qq.textContent=Q.q;qw.appendChild(qq);
+    const og=document.createElement('div');og.className='quiz-opts';
+    Q.opts.forEach((o,i)=>{
+      const b=document.createElement('button');b.className='qopt';
+      b.innerHTML=`<span class="qemoji">${o.e}</span><span class="qword">${o.w}</span>`;
+      b.onclick=()=>{
+        if(qDone)return;qDone=true;
+        og.querySelectorAll('.qopt').forEach((btn,j)=>{
+          btn.classList.add('done');
+          if(j===Q.a)btn.classList.add('ok');
+          else if(j===i&&i!==Q.a)btn.classList.add('no');
+        });
+        const res=document.getElementById('qres');
+        if(i===Q.a){res.textContent='🌟 Yes! That is right!';doStarBurst();}
+        else{res.textContent='💡 The answer is: '+Q.opts[Q.a].w;}
+      };
+      og.appendChild(b);
+    });
+    qw.appendChild(og);
+    const res=document.createElement('div');res.className='quiz-res';res.id='qres';qw.appendChild(res);
+    area.appendChild(qw);
+  }
+}
+
+function prev(){if(slide>0){slide--;qDone=false;render();}}
+function next(){if(slide<29){slide++;qDone=false;render();}}
+
+function startTimer(){
+  setInterval(()=>{
+    timerS--;
+    if(timerS<=0){document.getElementById('tmr').textContent='⏰ Done!';return;}
+    const m=Math.floor(timerS/60),s=timerS%60;
+    document.getElementById('tmr').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(timerS<=300){document.getElementById('tmr').style.background='rgba(255,80,80,.3)';document.getElementById('tmr').style.borderColor='rgba(255,80,80,.6)';}
+  },1000);
+}
+
+function reward(e){
+  const l=document.getElementById('rl');
+  for(let i=0;i<6;i++){setTimeout(()=>{const el=document.createElement('div');el.className='fi';el.textContent=e;el.style.left=(20+Math.random()*60)+'%';el.style.bottom='80px';el.style.fontSize=(18+Math.random()*16)+'px';el.style.animationDuration=(1.5+Math.random())+'s';l.appendChild(el);setTimeout(()=>el.remove(),3000);},i*140);}
+}
+function doConfetti(){
+  const l=document.getElementById('rl');const cs=['#ffd700','#ff88dd','#88ddff','#88ff88','#ff8888','#ffaa44'];
+  for(let i=0;i<40;i++){setTimeout(()=>{const el=document.createElement('div');el.className='cp';el.style.left=(10+Math.random()*80)+'%';el.style.top='0';el.style.background=cs[Math.floor(Math.random()*cs.length)];el.style.animationDuration=(1.5+Math.random())+'s';el.style.animationDelay=Math.random()*.5+'s';l.appendChild(el);setTimeout(()=>el.remove(),3000);},Math.random()*300);}
+}
+function doStarBurst(){
+  const el=document.createElement('div');el.className='sb';el.textContent='🌟';document.body.appendChild(el);
+  const tx=document.createElement('div');tx.style.cssText='position:fixed;top:calc(50% + 65px);left:50%;transform:translateX(-50%);color:#ffd700;font-size:24px;font-weight:900;font-family:Cinzel Decorative,serif;z-index:1001;animation:sba 1.5s ease-out forwards;pointer-events:none;';tx.textContent='GREAT JOB!';document.body.appendChild(tx);
+  setTimeout(()=>{el.remove();tx.remove();},2000);
+}
+function doRing(){for(let i=0;i<3;i++){setTimeout(()=>{const el=document.createElement('div');el.className='ar';el.style.borderColor=['gold','#ff88dd','#88ddff'][i];document.body.appendChild(el);setTimeout(()=>el.remove(),2000);},i*200);}}
+function doAllStar(){doConfetti();setTimeout(doStarBurst,300);for(let i=0;i<8;i++)setTimeout(()=>reward(['🥇','⭐','🏆','✨'][i%4]),i*200);}
+function doHearts(){const h=['💝','💖','💗','💕','❤️'];for(let i=0;i<10;i++)setTimeout(()=>reward(h[Math.floor(Math.random()*h.length)]),i*100);}
+
+init();
+</script>
